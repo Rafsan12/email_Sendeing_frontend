@@ -45,9 +45,9 @@ export default function FeatureHighlights() {
       cards.forEach((card, i) => {
         const fromX = i % 2 === 0 ? -200 : 200;
 
-        gsap.from(card, {
+        gsap.from(card as Element, {
           scrollTrigger: {
-            trigger: card,
+            trigger: card as Element,
             start: "top 80%",
             toggleActions: "play none none reverse",
           },
