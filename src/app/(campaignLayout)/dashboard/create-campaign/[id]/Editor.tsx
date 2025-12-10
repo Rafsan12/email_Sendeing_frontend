@@ -7,24 +7,27 @@ import {
   rteProseMirror,
 } from "@grapesjs/studio-sdk-plugins";
 import "@grapesjs/studio-sdk/style";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Editor({ campaignId }: { campaignId: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const editorInitialized = useRef(false);
+
   useEffect(() => {
-    console.log("Initializing GrapesJS Studio for campaign:", campaignId);
+    if (!containerRef.current || editorInitialized.current) return;
+
+    console.log("Mounting GrapesJS Studio on real DOM element");
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const editor = createStudioEditor({
-      root: "#studio-editor",
+      root: containerRef.current, // ← THIS IS THE FIX (pass the real DOM node, not a selector)
       licenseKey:
         "dac1b694508a4b0691fc77053b326d83a2d6661e1c394473a33d23c526991e37",
       project: {
         type: "email",
         id: campaignId,
       },
-      identity: {
-        id: "user-123", // change later if you have real user
-      },
+      identity: { id: "user-123" },
       assets: { storageType: "cloud" },
       storage: {
         type: "cloud",
@@ -37,6 +40,8 @@ export default function Editor({ campaignId }: { campaignId: string }) {
         layoutSidebarButtons.init({}),
       ],
     });
+
+    editorInitialized.current = true;
   }, [campaignId]);
 
   return (
@@ -48,7 +53,10 @@ export default function Editor({ campaignId }: { campaignId: string }) {
         flexDirection: "column",
       }}
     >
-      <div id="studio-editor" style={{ flex: 1, minHeight: 0 }} />
+      <div
+        ref={containerRef}
+        style={{ flex: 1, minHeight: 0, background: "#f9fafb" }}
+      />
     </div>
   );
 }
