@@ -10,20 +10,20 @@ import "@grapesjs/studio-sdk/style";
 import { useEffect } from "react";
 
 export default function Editor({ campaignId }: { campaignId: string }) {
-  console.log("Editor component loaded");
-
   useEffect(() => {
-    console.log("Initializing editor with ID:", campaignId);
-    createStudioEditor({
+    console.log("Initializing GrapesJS Studio for campaign:", campaignId);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const editor = createStudioEditor({
       root: "#studio-editor",
       licenseKey:
         "dac1b694508a4b0691fc77053b326d83a2d6661e1c394473a33d23c526991e37",
       project: {
         type: "email",
-        id: campaignId, // connect GrapesJS to this campaign
+        id: campaignId,
       },
       identity: {
-        id: "STATIC_OR_USER_ID",
+        id: "user-123", // change later if you have real user
       },
       assets: { storageType: "cloud" },
       storage: {
@@ -39,5 +39,16 @@ export default function Editor({ campaignId }: { campaignId: string }) {
     });
   }, [campaignId]);
 
-  return <div id="studio-editor" style={{ height: "100vh", width: "100%" }} />;
+  return (
+    <div
+      style={{
+        height: "100vh",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div id="studio-editor" style={{ flex: 1, minHeight: 0 }} />
+    </div>
+  );
 }
