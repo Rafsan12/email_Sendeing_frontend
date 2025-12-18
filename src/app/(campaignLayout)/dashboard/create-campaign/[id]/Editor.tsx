@@ -61,9 +61,9 @@ export default function CampaignEditor({ campaignId }: { campaignId: string }) {
   return (
     <main className="flex flex-col " style={{ height: "100vh" }}>
       {/* Editor takes all space except bottom bar */}
-      <div className="flex-1 bg-red-600  overflow-hidden">
+      <div className="flex-1  relative overflow-hidden">
         <GrapesJsStudio
-          className="absolute inset-0"
+          className="absolute bg-red-900 inset-0"
           onReady={onReady}
           options={{
             licenseKey:

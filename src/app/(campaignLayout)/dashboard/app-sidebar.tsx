@@ -38,26 +38,31 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
 
   return (
-    <Sidebar {...props}>
-      <SidebarContent>
-        {data.navMain.map((group) => (
-          <SidebarGroup key={group.title}>
-            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {group.items.map((link) => (
-                  <SidebarMenuItem key={link.title}>
-                    <SidebarMenuButton asChild isActive={pathname === link.url}>
-                      <Link href={link.url}>{link.title}</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
-      </SidebarContent>
-      <SidebarRail />
-    </Sidebar>
+    <>
+      <Sidebar {...props}>
+        <SidebarContent>
+          {data.navMain.map((group) => (
+            <SidebarGroup key={group.title}>
+              <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {group.items.map((link) => (
+                    <SidebarMenuItem key={link.title}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === link.url}
+                      >
+                        <Link href={link.url}>{link.title}</Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))}
+        </SidebarContent>
+        <SidebarRail />
+      </Sidebar>
+    </>
   );
 }

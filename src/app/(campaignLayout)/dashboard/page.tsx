@@ -1,22 +1,21 @@
-import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-
 export default function DashboardPage() {
   return (
-    <>
-      <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-        <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="mr-2 h-4" />
-      </header>
-
-      <div className="flex flex-1 flex-col gap-4 p-4">
-        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          <div className="bg-muted/50 aspect-video rounded-xl" />
-          <div className="bg-muted/50 aspect-video rounded-xl" />
-          <div className="bg-muted/50 aspect-video rounded-xl" />
+    <div className="flex flex-col gap-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="rounded-lg border p-4">
+          <h2 className="font-medium">Create Campaign</h2>
+          <p className="text-sm text-muted-foreground">
+            Design and send a new email campaign
+          </p>
         </div>
-        <div className="bg-muted/50 min-h-screen flex-1 rounded-xl md:min-h-min" />
+
+        <div className="rounded-lg border p-4">
+          <h2 className="font-medium">Campaigns</h2>
+          <p className="text-sm text-muted-foreground">
+            View and manage existing campaigns
+          </p>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
