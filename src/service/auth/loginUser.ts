@@ -1,108 +1,87 @@
 "use server";
 
+import { getDefaultRoute } from "@/lib/auth-utlis";
 import { parse } from "cookie";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const loginSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string().min(6),
 });
 
-type LoginResponse =
-  | { success: true; data: unknown }
-  | { success: false; error: string };
+type ParsedCookie = Record<string, string | undefined>;
 
-export const loginUser = async (
-  _currentState: unknown,
-  formData: FormData
-): Promise<LoginResponse> => {
+export const loginUser = async (_currentState: unknown, formData: FormData) => {
   try {
-    let accessTokenObject: null | any = null;
-    let refreshTokenObject: null | any = null;
-
-    const rawData = {
-      email: formData.get("email"),
-      password: formData.get("password"),
-    };
+    const redirectTo = formData.get("redirect");
 
     const parsed = loginSchema.safeParse({
-      email: rawData.email?.toString(),
-      password: rawData.password?.toString(),
+      email: formData.get("email")?.toString(),
+      password: formData.get("password")?.toString(),
     });
 
     if (!parsed.success) {
-      return {
-        success: false,
-        error: parsed.error.issues[0].message,
-      };
+      return { success: false, error: parsed.error.issues[0].message };
     }
-
-    const loginData = parsed.data;
 
     const res = await fetch(
       "https://email-sending-backend.vercel.app/api/v1/auth/login",
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(parsed.data),
       }
     );
 
     const result = await res.json();
 
-    const setCookiesHeaders = res.headers.getSetCookie();
-    console.log({ setCookiesHeaders });
-
-    if (setCookiesHeaders && setCookiesHeaders.length > 0) {
-      setCookiesHeaders.forEach((cookie: string) => {
-        // console.log(cookie, "for each cookies");
-        const parsedCookie = parse(cookie);
-        if (parsedCookie["accessToken"]) {
-          accessTokenObject = parsedCookie;
-        }
-        if (parsedCookie["refreshToken"]) {
-          refreshTokenObject = parsedCookie;
-        }
-      });
-    } else {
-      throw new Error("No Set-Cookie headers found");
-    }
-
-    console.log({ accessTokenObject, refreshTokenObject });
-
-    if (!accessTokenObject) {
-      throw new Error("Access token not found in cookies");
-    }
-    if (!refreshTokenObject) {
-      throw new Error("Refresh token not found in cookies");
-    }
-
-    const cookieStore = await cookies();
-
-    cookieStore.set("accessToken", accessTokenObject.accessToken, {});
-    cookieStore.set("refreshToken", refreshTokenObject.refreshToken, {});
-
-    console.log({ res, result });
-
     if (!res.ok) {
-      return {
-        success: false,
-        error: result.message ?? "Login failed",
-      };
+      return { success: false, error: result.message ?? "Login failed" };
     }
 
-    return {
-      success: true,
-      data: result,
-    };
-  } catch (error) {
+    let accessToken: string | null = null;
+    let refreshToken: string | null = null;
+
+    res.headers.getSetCookie().forEach((cookie) => {
+      const parsedCookie: ParsedCookie = parse(cookie);
+      if (parsedCookie.accessToken) accessToken = parsedCookie.accessToken;
+      if (parsedCookie.refreshToken) refreshToken = parsedCookie.refreshToken;
+    });
+
+    if (!accessToken || !refreshToken) {
+      throw new Error("Auth cookies missing");
+    }
+
+    const cookieStore = cookies();
+
+    (await cookieStore).set("accessToken", accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+    });
+
+    (await cookieStore).set("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+    });
+
+    const redirectPath =
+      redirectTo && redirectTo.toString().startsWith("/")
+        ? redirectTo.toString()
+        : getDefaultRoute(result.role);
+
+    redirect(redirectPath);
+  } catch (error: any) {
+    if (error?.digest?.startsWith("NEXT_REDIRECT")) {
+      throw error;
+    }
+
     console.error("Login Error:", error);
-    return {
-      success: false,
-      error: "Something went wrong during login",
-    };
+    return { success: false, error: "Something went wrong during login" };
   }
 };

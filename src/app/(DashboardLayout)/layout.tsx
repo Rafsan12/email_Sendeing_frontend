@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "./dashboard/app-sidebar";
+import { AppSidebar } from "./campaign/app-sidebar";
 
 export default function DashboardLayout({
   children,

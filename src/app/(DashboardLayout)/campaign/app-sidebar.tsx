@@ -22,12 +22,12 @@ const data = {
       title: "Building Your Application",
       url: "#",
       items: [
-        { title: "Create-Campaign", url: "/dashboard/create-campaign" },
-        { title: "campaign Design", url: "/dashboard/campaignDesign" },
-        { title: "Send-Email", url: "/dashboard/send-email" },
+        { title: "Create-Campaign", url: "/campaign" },
+        { title: "campaign Design", url: "/campaignDesign" },
+        { title: "Send-Email", url: "/send-email" },
 
-        { title: "Caching", url: "/dashboard/caching" },
-        { title: "Styling", url: "/dashboard/styling" },
+        { title: "Caching", url: "/caching" },
+        { title: "Styling", url: "/styling" },
         { title: "Optimizing", url: "/dashboard/optimizing" },
       ],
     },
