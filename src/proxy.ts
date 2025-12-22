@@ -1,5 +1,4 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import {
@@ -8,12 +7,12 @@ import {
   isAuthRoute,
   UserRoles,
 } from "./lib/auth-utlis";
+import { deleteCookie, getCookie } from "./service/auth/tokenHandler";
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
-  const cookiesStore = await cookies();
   const pathname = request.nextUrl.pathname;
-  const accessToken = request.cookies.get("accessToken")?.value || null;
+  const accessToken = (await getCookie("accessToken")) || null;
 
   let userRole: UserRoles | null = null;
   if (accessToken) {
@@ -23,8 +22,8 @@ export async function proxy(request: NextRequest) {
     );
 
     if (typeof verifiedToken === "string") {
-      cookiesStore.delete("accessToken");
-      cookiesStore.delete("refreshToken");
+      await deleteCookie("accessToken");
+      await deleteCookie("refreshToken");
       return NextResponse.redirect(new URL("/login", request.url));
     }
 

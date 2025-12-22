@@ -1,15 +1,18 @@
+import { getCookie } from "@/service/auth/tokenHandler";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
+import LogoutButton from "./LogoutButton";
 
-export default function Navbar() {
+export default async function Navbar() {
   const navItems = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
     { href: "/campaign", label: "Dashboard" },
   ];
+  const accessToken = await getCookie("accessToken");
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur  dark:bg-background/95">
@@ -31,9 +34,13 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden md:flex items-center space-x-2">
-            <Link href="/login" className="text-lg font-medium">
-              <Button>Login</Button>
-            </Link>
+            {accessToken ? (
+              <LogoutButton />
+            ) : (
+              <Link href="/login" className="text-lg font-medium">
+                <Button>Login</Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu */}
@@ -60,9 +67,13 @@ export default function Navbar() {
                   ))}
                   <div className="border-t pt-4 flex flex-col space-y-4">
                     <div className="flex justify-center"></div>
-                    <Link href="/login" className="text-lg font-medium">
-                      <Button>Login</Button>
-                    </Link>
+                    {accessToken ? (
+                      <LogoutButton />
+                    ) : (
+                      <Link href="/login" className="text-lg font-medium">
+                        <Button>Login</Button>
+                      </Link>
+                    )}
                   </div>
                 </nav>
               </SheetContent>

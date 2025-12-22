@@ -1,87 +1,135 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { getDefaultRoute } from "@/lib/auth-utlis";
+import {
+  getDefaultRoute,
+  isValidRedirectForRole,
+  UserRoles,
+} from "@/lib/auth-utlis";
 import { parse } from "cookie";
-import { cookies } from "next/headers";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { redirect } from "next/navigation";
-import { z } from "zod";
+import z from "zod";
+import { setCookie } from "./tokenHandler";
 
-const loginSchema = z.object({
-  email: z.email(),
-  password: z.string().min(6),
+const loginValidationZodSchema = z.object({
+  email: z.email({
+    message: "Email is required",
+  }),
+  password: z
+    .string("Password is required")
+    .min(6, {
+      error: "Password is required and must be at least 6 characters long",
+    })
+    .max(100, {
+      error: "Password must be at most 100 characters long",
+    }),
 });
 
-type ParsedCookie = Record<string, string | undefined>;
-
-export const loginUser = async (_currentState: unknown, formData: FormData) => {
+export const loginUser = async (
+  _currentState: any,
+  formData: any
+): Promise<any> => {
   try {
-    const redirectTo = formData.get("redirect");
+    const redirectTo = formData.get("redirect") || null;
+    let accessTokenObject: null | any = null;
+    let refreshTokenObject: null | any = null;
+    const loginData = {
+      email: formData.get("email"),
+      password: formData.get("password"),
+    };
 
-    const parsed = loginSchema.safeParse({
-      email: formData.get("email")?.toString(),
-      password: formData.get("password")?.toString(),
-    });
+    const validatedFields = loginValidationZodSchema.safeParse(loginData);
 
-    if (!parsed.success) {
-      return { success: false, error: parsed.error.issues[0].message };
+    if (!validatedFields.success) {
+      return {
+        success: false,
+        errors: validatedFields.error.issues.map((issue) => {
+          return {
+            field: issue.path[0],
+            message: issue.message,
+          };
+        }),
+      };
     }
 
     const res = await fetch(
       "https://email-sending-backend.vercel.app/api/v1/auth/login",
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsed.data),
+        body: JSON.stringify(loginData),
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
     );
 
-    const result = await res.json();
+    const setCookieHeaders = res.headers.getSetCookie();
 
-    if (!res.ok) {
-      return { success: false, error: result.message ?? "Login failed" };
+    if (setCookieHeaders && setCookieHeaders.length > 0) {
+      setCookieHeaders.forEach((cookie: string) => {
+        const parsedCookie = parse(cookie);
+
+        if (parsedCookie["accessToken"]) {
+          accessTokenObject = parsedCookie;
+        }
+        if (parsedCookie["refreshToken"]) {
+          refreshTokenObject = parsedCookie;
+        }
+      });
+    } else {
+      throw new Error("No Set-Cookie header found");
     }
 
-    let accessToken: string | null = null;
-    let refreshToken: string | null = null;
-
-    res.headers.getSetCookie().forEach((cookie) => {
-      const parsedCookie: ParsedCookie = parse(cookie);
-      if (parsedCookie.accessToken) accessToken = parsedCookie.accessToken;
-      if (parsedCookie.refreshToken) refreshToken = parsedCookie.refreshToken;
-    });
-
-    if (!accessToken || !refreshToken) {
-      throw new Error("Auth cookies missing");
+    if (!accessTokenObject) {
+      throw new Error("Tokens not found in cookies");
     }
 
-    const cookieStore = cookies();
+    if (!refreshTokenObject) {
+      throw new Error("Tokens not found in cookies");
+    }
 
-    (await cookieStore).set("accessToken", accessToken, {
-      httpOnly: true,
+    await setCookie("accessToken", accessTokenObject.accessToken, {
       secure: true,
-      sameSite: "lax",
-      path: "/",
+      httpOnly: true,
+      maxAge: parseInt(accessTokenObject["Max-Age"]) || 1000 * 60 * 60,
+      path: accessTokenObject.Path || "/",
+      sameSite: accessTokenObject["SameSite"] || "none",
     });
 
-    (await cookieStore).set("refreshToken", refreshToken, {
-      httpOnly: true,
+    await setCookie("refreshToken", refreshTokenObject.refreshToken, {
       secure: true,
-      sameSite: "lax",
-      path: "/",
+      httpOnly: true,
+      maxAge:
+        parseInt(refreshTokenObject["Max-Age"]) || 1000 * 60 * 60 * 24 * 90,
+      path: refreshTokenObject.Path || "/",
+      sameSite: refreshTokenObject["SameSite"] || "none",
     });
+    const verifiedToken: JwtPayload | string = jwt.verify(
+      accessTokenObject.accessToken,
+      process.env.JWT_ACCESS_TOKEN_SECRET as string
+    );
 
-    const redirectPath =
-      redirectTo && redirectTo.toString().startsWith("/")
-        ? redirectTo.toString()
-        : getDefaultRoute(result.role);
+    if (typeof verifiedToken === "string") {
+      throw new Error("Invalid token");
+    }
 
-    redirect(redirectPath);
+    const userRole: UserRoles = verifiedToken.role;
+
+    if (redirectTo) {
+      const requestedPath = redirectTo.toString();
+      if (isValidRedirectForRole(requestedPath, userRole)) {
+        redirect(requestedPath);
+      } else {
+        redirect(getDefaultRoute(userRole));
+      }
+    }
   } catch (error: any) {
+    // Re-throw NEXT_REDIRECT errors so Next.js can handle them
     if (error?.digest?.startsWith("NEXT_REDIRECT")) {
       throw error;
     }
-
-    console.error("Login Error:", error);
-    return { success: false, error: "Something went wrong during login" };
+    console.log(error);
+    return { error: "Login failed" };
   }
 };
