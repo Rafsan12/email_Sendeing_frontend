@@ -12,75 +12,102 @@ export default async function Navbar() {
     { href: "/contact", label: "Contact" },
     { href: "/campaign", label: "Dashboard" },
   ];
+
   const accessToken = await getCookie("accessToken");
+
   return (
-    <>
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur  dark:bg-background/95">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="text-xl font-bold text-primary">AmplyMail</span>
-          </Link>
+    <header className="sticky top-0 z-50 w-full border-b border-stone-200 bg-[#FFFBF5]/80 backdrop-blur-md">
+      <div className="container mx-auto flex h-20 items-center justify-between px-6">
+        {/* 1. LOGO: Serif font to match the brand vibe */}
+        <Link href="/" className="flex items-center gap-2 group">
+          {/* Optional: Simple circle logo mark */}
+          <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg font-serif group-hover:bg-stone-900 transition-colors">
+            A
+          </div>
+          <span className="text-2xl font-serif font-bold text-stone-900 tracking-tight">
+            AmplyMail
+          </span>
+        </Link>
 
-          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-            {navItems.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="text-foreground hover:text-primary transition-colors"
+        {/* 2. DESKTOP NAV */}
+        <nav className="hidden md:flex items-center space-x-8 text-sm font-medium">
+          {navItems.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              className="text-stone-600 hover:text-orange-600 transition-colors relative group"
+            >
+              {link.label}
+              {/* Subtle underline animation */}
+              <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-orange-600 transition-all group-hover:w-full" />
+            </Link>
+          ))}
+        </nav>
+
+        {/* 3. ACTIONS (Login/Logout) */}
+        <div className="hidden md:flex items-center space-x-4">
+          {accessToken ? (
+            <LogoutButton />
+          ) : (
+            <Link href="/login">
+              <Button
+                variant="default"
+                className="rounded-full bg-stone-900 text-[#FFFBF5] hover:bg-orange-600 px-6"
               >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="hidden md:flex items-center space-x-2">
-            {accessToken ? (
-              <LogoutButton />
-            ) : (
-              <Link href="/login" className="text-lg font-medium">
-                <Button>Login</Button>
-              </Link>
-            )}
-          </div>
-
-          {/* Mobile Menu */}
-
-          <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline">
-                  {" "}
-                  <Menu />{" "}
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px] p-4">
-                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-                <nav className="flex flex-col space-y-4 mt-8">
-                  {navItems.map((link) => (
-                    <Link
-                      key={link.label}
-                      href={link.href}
-                      className="text-lg font-medium"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                  <div className="border-t pt-4 flex flex-col space-y-4">
-                    <div className="flex justify-center"></div>
-                    {accessToken ? (
-                      <LogoutButton />
-                    ) : (
-                      <Link href="/login" className="text-lg font-medium">
-                        <Button>Login</Button>
-                      </Link>
-                    )}
-                  </div>
-                </nav>
-              </SheetContent>
-            </Sheet>
-          </div>
+                Login
+              </Button>
+            </Link>
+          )}
         </div>
-      </header>
-    </>
+
+        {/* 4. MOBILE MENU */}
+        <div className="md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                className="text-stone-900 hover:text-orange-600"
+              >
+                <Menu className="w-6 h-6" />
+              </Button>
+            </SheetTrigger>
+
+            {/* Custom Background Color for Sheet */}
+            <SheetContent
+              side="right"
+              className="w-[300px] sm:w-[400px] p-6 bg-[#FFFBF5] border-stone-200"
+            >
+              <SheetTitle className="text-left font-serif text-2xl mb-8">
+                Navigation
+              </SheetTitle>
+
+              <nav className="flex flex-col space-y-6">
+                {navItems.map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="text-xl font-medium text-stone-700 hover:text-orange-600 transition-colors border-b border-stone-100 pb-2"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+
+                <div className="pt-8 flex flex-col space-y-4">
+                  {accessToken ? (
+                    <LogoutButton />
+                  ) : (
+                    <Link href="/login" className="w-full">
+                      <Button className="w-full rounded-full bg-stone-900 text-[#FFFBF5] hover:bg-orange-600 h-12 text-lg">
+                        Login
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
+    </header>
   );
 }

@@ -23,19 +23,8 @@ export default function HeroWarm() {
         <div className="absolute top-10 -left-10 w-64 h-64 text-orange-400/30 rotate-12">
           <HeroSVG />
         </div>
-
         {/* TOP RIGHT - Smaller, tilted opposite way */}
         <div className="absolute top-20 -right-5 w-48 h-48 text-orange-500/40 -rotate-12">
-          <HeroSVG />
-        </div>
-
-        {/* BOTTOM LEFT - Near the bottom edge of screen */}
-        <div className="absolute bottom-10 left-10 w-40 h-40 text-orange-300/50 rotate-45">
-          <HeroSVG />
-        </div>
-
-        {/* BOTTOM RIGHT - Large swoosh */}
-        <div className="absolute -bottom-10 -right-10 w-80 h-80 text-orange-400/20 -rotate-6">
           <HeroSVG />
         </div>
       </div>
@@ -75,12 +64,7 @@ export default function HeroWarm() {
             4. HERO IMAGE AREA
         ========================================= */}
         <div className="mt-20 relative mx-auto max-w-5xl perspective-1000">
-          {/* Specific Decoration behind the image (Top-Left relative to image) */}
-          <div className="absolute -top-16 -left-16 w-48 h-48 z-0 opacity-60 rotate-90">
-            <HeroSVG />
-          </div>
-
-          <div className="relative z-10 transform rotate-x-12 rounded-xl border-[8px] border-white shadow-2xl bg-white overflow-hidden">
+          <div className="relative z-10 transform rotate-x-12 rounded-xl border-8 border-white shadow-2xl bg-white overflow-hidden">
             <Image
               src="/image/Container.png"
               alt="Hero Image"

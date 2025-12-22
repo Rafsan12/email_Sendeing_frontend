@@ -1,146 +1,190 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import { BarChart3, MousePointer2, Zap } from "lucide-react";
+import { ArrowRight, BarChart3, MousePointer2, Zap } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const features = [
   {
     icon: MousePointer2,
-    title: "Drag & Drop Email Builder",
+    title: "Drag & Drop Builder",
     badge: "Powered by GrapesJS",
     description:
-      "Build pixel-perfect, responsive emails in minutes — no code needed. Drag images, buttons, text, and advanced blocks freely to create stunning campaigns that look amazing on every device.",
-    color: "from-blue-500 to-cyan-500",
+      "Build pixel-perfect, responsive emails in minutes. Drag images, buttons, and text freely to create stunning campaigns.",
+    color: "bg-orange-100 text-orange-600",
   },
   {
     icon: Zap,
-    title: "Campaign Automation",
+    title: "Smart Automation",
     description:
-      "Automate your entire email flow: welcome sequences, abandoned carts, win-back campaigns, and more. Trigger smart, personalized emails based on real user behavior — all on autopilot.",
-    color: "from-purple-500 to-pink-500",
+      "Automate your entire email flow: welcome sequences, abandoned carts, and win-back campaigns based on real user behavior.",
+    color: "bg-green-100 text-green-700",
   },
   {
     icon: BarChart3,
-    title: "Delivery & Open Rate Tracking",
+    title: "Deep Analytics",
     description:
-      "See exactly how your emails perform with real-time analytics. Track opens, clicks, bounces, and conversions in beautiful dashboards — then optimize and win, every time.",
-    color: "from-emerald-500 to-teal-500",
+      "Track opens, clicks, and conversions in real-time. Beautiful dashboards help you optimize and win, every single time.",
+    color: "bg-stone-100 text-stone-700",
   },
 ];
 
-export default function FeatureHighlights() {
+export default function FeatureTimeline() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray(".feature-card");
-
-      cards.forEach((card, i) => {
-        const fromX = i % 2 === 0 ? -200 : 200;
-
-        gsap.from(card as Element, {
-          scrollTrigger: {
-            trigger: card as Element,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
-          x: fromX,
-          opacity: 0,
-          duration: 1,
-          ease: "power3.out",
-        });
-      });
-
+      // 1. Animate the Central Line (Draws down)
       gsap.fromTo(
-        sectionRef.current,
-        { backgroundColor: "#ffffff" },
+        lineRef.current,
+        { scaleY: 0 },
         {
-          backgroundColor: "#f0f4ff",
+          scaleY: 1,
+          ease: "none",
+          transformOrigin: "top", // Grow from top to bottom
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top 70%",
-            end: "bottom 30%",
-            scrub: true,
+            start: "top 60%", // Start when section is near middle of screen
+            end: "bottom 80%",
+            scrub: 1, // Links animation directly to scroll bar (smooth)
           },
         }
       );
+
+      // 2. Animate the Cards (Slide in from Left/Right)
+      const cards = gsap.utils.toArray(".timeline-card");
+
+      cards.forEach((card: any, i) => {
+        // Even index (0, 2) comes from Left (-100px)
+        // Odd index (1) comes from Right (100px)
+        const isLeft = i % 2 === 0;
+        const xStart = isLeft ? -100 : 100;
+
+        gsap.fromTo(
+          card,
+          {
+            opacity: 0,
+            x: xStart,
+          },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 80%", // Triggers when card is 80% into viewport
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      });
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={sectionRef} className="w-full py-24 px-6 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
+    <section
+      ref={sectionRef}
+      className="w-full py-32 px-6 relative bg-[#FFFBF5] overflow-hidden"
+    >
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
-        <div className="text-center mb-20">
-          <Badge variant="outline" className="mb-6 text-sm tracking-wider">
-            CORE FEATURES
+        <div className="text-center mb-24 max-w-3xl mx-auto">
+          <Badge
+            variant="outline"
+            className="mb-6 px-4 py-1 border-stone-300 text-stone-500 tracking-widest uppercase text-xs"
+          >
+            Core Features
           </Badge>
-          <h2 className="text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/70">
-            Built for modern email marketing
+          <h2 className="text-4xl md:text-5xl font-serif text-stone-900 leading-tight mb-6">
+            Designed for <span className="italic text-orange-600">growth.</span>
           </h2>
-          <p className="mt-6 text-xl text-muted-foreground max-w-2xl mx-auto">
-            Three powerful tools. One seamless experience.
-          </p>
         </div>
 
-        {/* Feature Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
+        {/* TIMELINE CONTAINER */}
+        <div className="relative">
+          {/* THE CENTRAL LINE (Only visible on Desktop) */}
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-[2px] bg-stone-200">
+            {/* The Animated Overlay Line (Orange) */}
+            <div
+              ref={lineRef}
+              className="w-full h-full bg-orange-400 origin-top"
+            ></div>
+          </div>
 
-            return (
-              <Card
-                key={index}
-                className={cn(
-                  "relative group cursor-pointer feature-card",
-                  "transition-all duration-700 hover:scale-[1.02]"
-                )}
-              >
+          {/* Cards Loop */}
+          <div className="flex flex-col gap-12 md:gap-24">
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              const isEven = index % 2 === 0;
+
+              return (
                 <div
+                  key={index}
                   className={cn(
-                    "absolute -inset-4 opacity-0 group-hover:opacity-100 blur-3xl transition-opacity duration-1000",
-                    `bg-linear-to-br ${feature.color}`
+                    "timeline-card flex items-center justify-between md:w-full",
+                    // Mobile: Stack normally
+                    // Desktop: Row or Row-Reverse based on index
+                    isEven ? "md:flex-row" : "md:flex-row-reverse"
                   )}
-                />
+                >
+                  {/* EMPTY SPACER (Takes up 50% width on desktop to push card to side) */}
+                  <div className="hidden md:block w-5/12" />
 
-                <Card className="relative h-full border-0 shadow-xl bg-card/70 backdrop-blur-xl overflow-hidden">
-                  <div className="absolute inset-0 bg-linear-to-br from-white/5 to-transparent" />
-                  <div className="relative p-10 lg:p-12 text-center">
+                  {/* CENTER DOT (The connector on the line) */}
+                  <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center justify-center w-8 h-8 rounded-full bg-[#FFFBF5] border-2 border-orange-400 z-10">
+                    <div className="w-3 h-3 bg-orange-400 rounded-full" />
+                  </div>
+
+                  {/* THE CARD (Takes up 5/12 width ~ 42%) */}
+                  <div className="w-full md:w-5/12 group relative p-8 rounded-3xl bg-white border border-stone-100 shadow-xl shadow-stone-200/50 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500">
+                    {/* Icon */}
                     <div
                       className={cn(
-                        "w-20 h-20 mx-auto mb-8 rounded-3xl flex items-center justify-center",
-                        "shadow-2xl ring-8 ring-white/10",
-                        `bg-linear-to-br ${feature.color} text-white`
+                        "w-14 h-14 rounded-xl flex items-center justify-center mb-6 text-xl",
+                        feature.color
                       )}
                     >
-                      <Icon className="w-10 h-10" strokeWidth={2} />
+                      <Icon className="w-7 h-7" strokeWidth={2} />
                     </div>
-                    <h3 className="text-3xl font-bold mt-8 mb-4">
+
+                    <h3 className="text-2xl font-bold text-stone-900 mb-3 font-serif">
                       {feature.title}
                     </h3>
-                    {feature.badge && (
-                      <Badge variant="secondary" className="mb-6 text-sm">
-                        {feature.badge}
-                      </Badge>
-                    )}
-                    <p className="text-lg text-muted-foreground leading-relaxed">
+
+                    <p className="text-stone-600 leading-relaxed mb-6">
                       {feature.description}
                     </p>
+
+                    <div className="flex items-center text-sm font-semibold text-stone-900 group-hover:text-orange-600 transition-colors">
+                      Learn more
+                      <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                    </div>
+
+                    {/* Small Arrow pointing to center line */}
+                    <div
+                      className={cn(
+                        "hidden md:block absolute top-10 w-4 h-4 bg-white border-t border-stone-100 border-l rotate-45",
+                        isEven
+                          ? "-right-2 border-r-0 border-b-0"
+                          : "-left-2 border-r border-b border-t-0 border-l-0" // Flip arrow based on side
+                      )}
+                    />
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-transparent via-white/20 to-transparent" />
-                </Card>
-              </Card>
-            );
-          })}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

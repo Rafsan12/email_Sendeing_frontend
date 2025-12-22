@@ -1,80 +1,60 @@
 "use client";
 
-import { gsap } from "gsap";
-import { useEffect } from "react";
+import gsap from "gsap";
+import { useEffect, useRef } from "react";
 
 export default function SocialSVG() {
+  const containerRef = useRef(null);
+
+  // Optional: Auto-scroll animation
   useEffect(() => {
-    gsap.from(".logo-item", {
-      opacity: 0,
-      y: 20,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: "power2.out",
-      repeat: -1,
-      yoyo: true,
+    const ctx = gsap.context(() => {
+      // This assumes your SVG is very wide.
+      // We simply move it to the left infinitely.
+      gsap.to(containerRef.current, {
+        x: "-50%",
+        duration: 20,
+        ease: "none",
+        repeat: -1,
+      });
     });
+    return () => ctx.revert();
   }, []);
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center justify-items-center px-4">
-      <div className="logo-item flex items-center justify-center h-12 w-32 bg-gray-500">
-        <svg className="h-8 w-auto" viewBox="0 0 120 40">
-          <rect x="10" y="8" width="8" height="24" rx="2" fill="white" />
-          <rect x="24" y="12" width="8" height="20" rx="2" fill="white" />
-          <rect x="38" y="4" width="8" height="28" rx="2" fill="white" />
-          <text x="52" y="26" fontSize="12" fontWeight="700" fill="white">
-            ACME
-          </text>
+    <div className="w-full overflow-hidden">
+      {/* Container wraps TWO copies of the SVG for seamless looping */}
+      <div ref={containerRef} className="flex gap-20 w-fit">
+        {/* COPY 1 */}
+        <svg
+          width="800"
+          height="60"
+          viewBox="0 0 800 60"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* ... PASTE YOUR LOGO PATHS HERE ... */}
+          <circle cx="50" cy="30" r="20" fill="currentColor" />
+          <rect x="150" y="10" width="40" height="40" fill="currentColor" />
+          <circle cx="300" cy="30" r="20" fill="currentColor" />
+          <rect x="450" y="10" width="40" height="40" fill="currentColor" />
+          <circle cx="600" cy="30" r="20" fill="currentColor" />
         </svg>
-      </div>
-      <div className="logo-item flex items-center justify-center h-12 w-32 bg-gray-500">
-        <svg className="h-8 w-auto" viewBox="0 0 120 40">
-          <rect x="10" y="8" width="8" height="24" rx="2" fill="white" />
-          <rect x="24" y="12" width="8" height="20" rx="2" fill="white" />
-          <rect x="38" y="4" width="8" height="28" rx="2" fill="white" />
-          <text x="52" y="26" fontSize="12" fontWeight="700" fill="white">
-            ACME
-          </text>
-        </svg>
-      </div>
-      <div className="logo-item flex items-center justify-center h-12 w-32 bg-gray-500">
-        <svg className="h-8 w-auto" viewBox="0 0 120 40">
-          <rect x="10" y="8" width="8" height="24" rx="2" fill="white" />
-          <rect x="24" y="12" width="8" height="20" rx="2" fill="white" />
-          <rect x="38" y="4" width="8" height="28" rx="2" fill="white" />
-          <text x="52" y="26" fontSize="12" fontWeight="700" fill="white">
-            ACME
-          </text>
-        </svg>
-      </div>
-      <div className="logo-item flex items-center justify-center h-12 w-32 bg-gray-500">
-        <svg className="h-8 w-auto" viewBox="0 0 120 40">
-          <rect x="10" y="8" width="8" height="24" rx="2" fill="white" />
-          <rect x="24" y="12" width="8" height="20" rx="2" fill="white" />
-          <rect x="38" y="4" width="8" height="28" rx="2" fill="white" />
-          <text x="52" y="26" fontSize="12" fontWeight="700" fill="white">
-            ACME
-          </text>
-        </svg>
-      </div>
-      <div className="logo-item flex items-center justify-center h-12 w-32 bg-gray-500">
-        <svg className="h-8 w-auto" viewBox="0 0 120 40">
-          <rect x="10" y="8" width="8" height="24" rx="2" fill="white" />
-          <rect x="24" y="12" width="8" height="20" rx="2" fill="white" />
-          <rect x="38" y="4" width="8" height="28" rx="2" fill="white" />
-          <text x="52" y="26" fontSize="12" fontWeight="700" fill="white">
-            ACME
-          </text>
-        </svg>
-      </div>
-      <div className="logo-item flex items-center justify-center h-12 w-32 bg-gray-500">
-        <svg className="h-8 w-auto" viewBox="0 0 120 40">
-          <rect x="10" y="8" width="8" height="24" rx="2" fill="white" />
-          <rect x="24" y="12" width="8" height="20" rx="2" fill="white" />
-          <rect x="38" y="4" width="8" height="28" rx="2" fill="white" />
-          <text x="52" y="26" fontSize="12" fontWeight="700" fill="white">
-            ACME
-          </text>
+
+        {/* COPY 2 (Duplicate for seamless loop) */}
+        <svg
+          width="800"
+          height="60"
+          viewBox="0 0 800 60"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* ... PASTE EXACT SAME LOGO PATHS HERE ... */}
+          <circle cx="50" cy="30" r="20" fill="currentColor" />
+          <rect x="150" y="10" width="40" height="40" fill="currentColor" />
+          <circle cx="300" cy="30" r="20" fill="currentColor" />
+          <rect x="450" y="10" width="40" height="40" fill="currentColor" />
+          <circle cx="600" cy="30" r="20" fill="currentColor" />
         </svg>
       </div>
     </div>
