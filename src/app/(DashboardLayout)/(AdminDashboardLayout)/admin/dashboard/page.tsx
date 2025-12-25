@@ -1,5 +1,10 @@
-const AdminDashboardPage = () => {
-  return <div>AdminDashboardPage</div>;
-};
-
-export default AdminDashboardPage;
+export default function AdminDashboardPage() {
+  return (
+    <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+      <h1>Hello From Admin</h1>
+      <div className="bg-muted/50 aspect-video rounded-xl" />
+      <div className="bg-muted/50 aspect-video rounded-xl" />
+      <div className="bg-muted/50 aspect-video rounded-xl" />
+    </div>
+  );
+}

@@ -89,22 +89,9 @@ export const loginUser = async (
       throw new Error("Tokens not found in cookies");
     }
 
-    await setCookie("accessToken", accessTokenObject.accessToken, {
-      secure: true,
-      httpOnly: true,
-      maxAge: parseInt(accessTokenObject["Max-Age"]) || 1000 * 60 * 60,
-      path: accessTokenObject.Path || "/",
-      sameSite: accessTokenObject["SameSite"] || "none",
-    });
+    await setCookie("accessToken", accessTokenObject.accessToken, {});
 
-    await setCookie("refreshToken", refreshTokenObject.refreshToken, {
-      secure: true,
-      httpOnly: true,
-      maxAge:
-        parseInt(refreshTokenObject["Max-Age"]) || 1000 * 60 * 60 * 24 * 90,
-      path: refreshTokenObject.Path || "/",
-      sameSite: refreshTokenObject["SameSite"] || "none",
-    });
+    await setCookie("refreshToken", refreshTokenObject.refreshToken, {});
     const verifiedToken: JwtPayload | string = jwt.verify(
       accessTokenObject.accessToken,
       process.env.JWT_ACCESS_TOKEN_SECRET as string
