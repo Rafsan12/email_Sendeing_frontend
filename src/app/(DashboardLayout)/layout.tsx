@@ -8,24 +8,34 @@ import {
 import { UserRoles } from "@/lib/auth-utlis";
 import { getCookie } from "@/service/auth/tokenHandler";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { redirect } from "next/navigation";
+
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const accessToken = await getCookie("accessToken");
+
+  if (!accessToken) {
+    redirect("/login");
+  }
+
   let role: UserRoles;
 
-  if (accessToken) {
+  try {
     const decoded = jwt.verify(
       accessToken,
       process.env.JWT_ACCESS_TOKEN_SECRET!
     ) as JwtPayload;
 
     role = decoded.role as UserRoles;
+  } catch (error) {
+    // invalid / expired token
+    console.log(error);
+    redirect("/login");
   }
 
-  // console.log(role);
   return (
     <SidebarProvider>
       <AppSidebar role={role} />
