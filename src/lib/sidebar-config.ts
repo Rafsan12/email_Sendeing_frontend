@@ -1,7 +1,7 @@
-// lib/sidebar-config.ts
 export type SidebarItem = {
   title: string;
   url: string;
+  icon?: string;
 };
 
 export type SidebarSection = {
@@ -11,15 +11,25 @@ export type SidebarSection = {
 
 export const adminSidebarItems: SidebarSection[] = [
   {
-    title: "Campaigns",
+    title: "Campaigns Management",
     items: [
       {
         title: "Campaigns",
-        url: "/admin/campaigns",
+        url: "/admin/campaign",
+        icon: "mail",
       },
       {
         title: "Create Campaign",
-        url: "/admin/campaigns/create",
+        url: "/admin/create-campaign",
+        icon: "plus",
+      },
+      {
+        title: "Single Campaign",
+        url: "/admin/single-campaign",
+      },
+      {
+        title: "Delete Campaign",
+        url: "/admin/delete",
       },
     ],
   },

@@ -54,11 +54,13 @@ export function LoginForm({
         <Field>
           <Button type="submit">{isPending ? "Logging in..." : "Login"}</Button>
         </Field>
-
         <Field>
           <FieldDescription className="text-center">
             Don&apos;t have an account?{" "}
-            <Link href="/register" className="underline underline-offset-4">
+            <Link
+              href="/register"
+              className="font-medium text-orange-600 hover:text-orange-500 transition-colors"
+            >
               Register
             </Link>
           </FieldDescription>

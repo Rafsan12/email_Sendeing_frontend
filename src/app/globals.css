@@ -120,3 +120,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* globals.css */
+@keyframes infinite-scroll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+.animate-infinite-scroll {
+  animation: infinite-scroll 40s linear infinite;
+}

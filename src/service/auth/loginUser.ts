@@ -103,14 +103,18 @@ export const loginUser = async (
 
     const userRole: UserRoles = verifiedToken.role;
 
+    const defaultRoute = getDefaultRoute(userRole);
+
     if (redirectTo) {
       const requestedPath = redirectTo.toString();
+
       if (isValidRedirectForRole(requestedPath, userRole)) {
         redirect(requestedPath);
-      } else {
-        redirect(getDefaultRoute(userRole));
       }
     }
+
+    // ALWAYS redirect
+    redirect(defaultRoute);
   } catch (error: any) {
     // Re-throw NEXT_REDIRECT errors so Next.js can handle them
     if (error?.digest?.startsWith("NEXT_REDIRECT")) {

@@ -1,6 +1,3 @@
-import Footer from "@/components/shared/Footer";
-import Navbar from "@/components/shared/Navbar";
-
 export default function CommonLayout({
   children,
 }: {
@@ -8,9 +5,7 @@ export default function CommonLayout({
 }) {
   return (
     <>
-      <Navbar />
       <main className="min-h-dvh">{children}</main>
-      <Footer />
     </>
   );
 }
