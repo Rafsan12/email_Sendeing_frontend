@@ -6,6 +6,7 @@ import {
   isValidRedirectForRole,
   UserRoles,
 } from "@/lib/auth-utlis";
+import { serverFetch } from "@/lib/server-fetch";
 import { parse } from "cookie";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { redirect } from "next/navigation";
@@ -53,16 +54,12 @@ export const loginUser = async (
       };
     }
 
-    const res = await fetch(
-      "https://email-sending-backend.vercel.app/api/v1/auth/login",
-      {
-        method: "POST",
-        body: JSON.stringify(loginData),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const res = await serverFetch.post("/auth/login", {
+      body: JSON.stringify(loginData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const setCookieHeaders = res.headers.getSetCookie();
 
