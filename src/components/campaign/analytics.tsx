@@ -100,7 +100,7 @@ export default function CampaignAnalytics({
         <div className="flex justify-between items-start gap-4">
           <div>
             <Link
-              href="/campaigns"
+              href="/admin/create-campaign"
               className="text-sm text-stone-500 flex items-center gap-1 mb-2"
             >
               <ArrowLeft className="w-3 h-3" />
