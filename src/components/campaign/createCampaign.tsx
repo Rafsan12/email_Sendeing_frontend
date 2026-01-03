@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { createCampaign } from "@/service/campaign/createCampaign";
@@ -8,6 +9,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
 export default function CreateCampaign() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [state, formAction, isPending] = useActionState(createCampaign, null);
 
   return (
@@ -25,7 +27,7 @@ export default function CreateCampaign() {
 
         <form action={formAction} className="relative">
           {/* THE VERTICAL LINE (The Timeline Track) */}
-          <div className="absolute left-4 top-4 bottom-20 w-0.5 bg-gradient-to-b from-orange-300 via-orange-100 to-transparent md:left-6"></div>
+          <div className="absolute left-4 top-4 bottom-20 w-0.5 bg-linear-to-b from-orange-300 via-orange-100 to-transparent md:left-6"></div>
 
           {/* STEP 1: IDENTITY */}
           <div className="relative mb-16 pl-12 md:pl-20 group">
@@ -126,13 +128,6 @@ export default function CreateCampaign() {
 
           {/* FINAL STEP: SUBMIT */}
           <div className="relative pl-12 md:pl-20">
-            {/* Error Message */}
-            {state?.error && (
-              <div className="absolute -top-14 left-20 right-0 bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm border border-red-100">
-                {state.error}
-              </div>
-            )}
-
             <Button
               type="submit"
               disabled={isPending}
