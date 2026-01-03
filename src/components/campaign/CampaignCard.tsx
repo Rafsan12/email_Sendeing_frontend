@@ -11,6 +11,7 @@ import {
   Send,
 } from "lucide-react";
 import Link from "next/link";
+import { DeleteCampaignModal } from "./deleteCampaign";
 
 export default async function CampaignCard() {
   const res = await singleUserCampaign();
@@ -120,7 +121,7 @@ export default async function CampaignCard() {
             /* Card Grid */
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {campaigns.map((c: any) => {
-                const isSent = c.status === "COMPLETED" || c.sentAt; // Adjust logic based on your API
+                const isSent = c.status === "COMPLETED" || c.sentAt;
 
                 return (
                   <div
@@ -156,15 +157,16 @@ export default async function CampaignCard() {
                       </p>
                     </div>
 
-                    {/* Card Bottom (Action) */}
-                    <div className="pt-6 border-t border-stone-50 mt-auto">
+                    {/* Card Bottom (Actions) */}
+                    <div className="pt-6 border-t border-stone-50 mt-auto flex items-center gap-2">
+                      {/* 1. Analytics Button (Primary) */}
                       <Link
                         href={`/admin/campaign/${c.id}/analytics`}
-                        className="w-full"
+                        className="flex-1"
                       >
                         <Button
                           variant="ghost"
-                          className="w-full justify-between text-stone-500 hover:text-stone-900 hover:bg-stone-50 group-hover:bg-orange-50 group-hover:text-orange-700"
+                          className="w-full justify-between text-stone-500 hover:text-stone-900 hover:bg-stone-50 group-hover:bg-orange-50 group-hover:text-orange-700 transition-colors"
                         >
                           <span className="flex items-center gap-2">
                             <BarChart3 className="w-4 h-4" />
@@ -173,6 +175,10 @@ export default async function CampaignCard() {
                           <ArrowRight className="w-4 h-4" />
                         </Button>
                       </Link>
+                      <DeleteCampaignModal
+                        campaignId={c.id}
+                        campaignTitle={c.title}
+                      />
                     </div>
                   </div>
                 );
