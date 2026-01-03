@@ -81,10 +81,8 @@ export const createCampaign = async (
     }
 
     const { data: campaign } = await res.json();
-    console.log("From server side", campaign);
 
     const campaignId = campaign?.id;
-    console.log(campaignId);
 
     if (!campaignId) {
       throw new Error("Campaign ID missing from response");
