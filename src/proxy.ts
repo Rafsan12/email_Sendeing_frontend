@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
   if (accessToken) {
     const verifiedToken: JwtPayload | string = jwt.verify(
       accessToken,
-      (process.env.JWT_ACCESS_TOKEN_SECRET as string) || ""
+      (process.env.JWT_ACCESS_TOKEN_SECRET as string) || "",
     );
 
     if (typeof verifiedToken === "string") {
@@ -35,7 +35,7 @@ export async function proxy(request: NextRequest) {
 
   if (accessToken && isAuth) {
     return NextResponse.redirect(
-      new URL(getDefaultRoute(userRole as UserRoles), request.url)
+      new URL(getDefaultRoute(userRole as UserRoles), request.url),
     );
   }
 
@@ -52,9 +52,15 @@ export async function proxy(request: NextRequest) {
   if (routeOwner === "ADMIN" || routeOwner === "ORG_ADMIN") {
     if (userRole !== routeOwner) {
       return NextResponse.redirect(
-        new URL(getDefaultRoute(userRole as UserRoles), request.url)
+        new URL(getDefaultRoute(userRole as UserRoles), request.url),
       );
     }
+  }
+
+  if (accessToken && pathname === "/") {
+    return NextResponse.redirect(
+      new URL(getDefaultRoute(userRole as UserRoles), request.url),
+    );
   }
 
   return NextResponse.next();

@@ -29,7 +29,7 @@ const loginValidationZodSchema = z.object({
 
 export const loginUser = async (
   _currentState: any,
-  formData: any
+  formData: any,
 ): Promise<any> => {
   try {
     const redirectTo = formData.get("redirect") || null;
@@ -86,12 +86,24 @@ export const loginUser = async (
       throw new Error("Tokens not found in cookies");
     }
 
-    await setCookie("accessToken", accessTokenObject.accessToken, {});
+    await setCookie("accessToken", accessTokenObject.accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 2 * 24 * 60 * 60,
+      path: "/",
+    });
 
-    await setCookie("refreshToken", refreshTokenObject.refreshToken, {});
+    await setCookie("refreshToken", refreshTokenObject.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 10 * 24 * 60 * 60,
+      path: "/",
+    });
     const verifiedToken: JwtPayload | string = jwt.verify(
       accessTokenObject.accessToken,
-      process.env.JWT_ACCESS_TOKEN_SECRET as string
+      process.env.JWT_ACCESS_TOKEN_SECRET as string,
     );
 
     if (typeof verifiedToken === "string") {

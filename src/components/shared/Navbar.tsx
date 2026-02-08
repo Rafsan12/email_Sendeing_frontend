@@ -1,4 +1,6 @@
+import { UserRoles } from "@/lib/auth-utlis";
 import { getCookie } from "@/service/auth/tokenHandler";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -10,10 +12,19 @@ export default async function Navbar() {
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
-    { href: "/campaign", label: "Dashboard" },
   ];
 
   const accessToken = await getCookie("accessToken");
+  let role: UserRoles;
+  if (accessToken) {
+    const decode = jwt.verify(
+      accessToken,
+      process.env.JWT_ACCESS_TOKEN_SECRET!,
+    ) as JwtPayload;
+    if (typeof decode.role === "string") {
+      role = decode.role.toLowerCase() as UserRoles;
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-stone-200 bg-[#FFFBF5]/80 backdrop-blur-md">
@@ -42,6 +53,7 @@ export default async function Navbar() {
               <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-orange-600 transition-all group-hover:w-full" />
             </Link>
           ))}
+          {accessToken && <Link href={`/${role}/dashboard`}>Dashboard</Link>}
         </nav>
 
         {/* 3. ACTIONS (Login/Logout) */}
@@ -75,7 +87,7 @@ export default async function Navbar() {
             {/* Custom Background Color for Sheet */}
             <SheetContent
               side="right"
-              className="w-[300px] sm:w-[400px] p-6 bg-[#FFFBF5] border-stone-200"
+              className="w-75 sm:w-100 p-6 bg-[#FFFBF5] border-stone-200"
             >
               <SheetTitle className="text-left font-serif text-2xl mb-8">
                 Navigation
