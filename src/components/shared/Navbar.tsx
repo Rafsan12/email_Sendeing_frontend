@@ -1,6 +1,4 @@
-import { UserRoles } from "@/lib/auth-utlis";
-import { getCookie } from "@/service/auth/tokenHandler";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import { getCurrentSession } from "@/lib/CurrentSession";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -14,17 +12,11 @@ export default async function Navbar() {
     { href: "/contact", label: "Contact" },
   ];
 
-  const accessToken = await getCookie("accessToken");
-  let role: UserRoles;
-  if (accessToken) {
-    const decode = jwt.verify(
-      accessToken,
-      process.env.JWT_ACCESS_TOKEN_SECRET!,
-    ) as JwtPayload;
-    if (typeof decode.role === "string") {
-      role = decode.role.toLowerCase() as UserRoles;
-    }
-  }
+  const session = await getCurrentSession();
+  const role = session?.role;
+  console.log(role);
+
+  // const accessToken = await getCookie("accessToken");
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-stone-200 bg-[#FFFBF5]/80 backdrop-blur-md">
@@ -53,12 +45,12 @@ export default async function Navbar() {
               <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-orange-600 transition-all group-hover:w-full" />
             </Link>
           ))}
-          {accessToken && <Link href={`/${role}/dashboard`}>Dashboard</Link>}
+          {session && <Link href={`/${role}/dashboard`}>Dashboard</Link>}
         </nav>
 
         {/* 3. ACTIONS (Login/Logout) */}
         <div className="hidden md:flex items-center space-x-4">
-          {accessToken ? (
+          {session ? (
             <LogoutButton />
           ) : (
             <Link href="/login">
@@ -105,7 +97,7 @@ export default async function Navbar() {
                 ))}
 
                 <div className="pt-8 flex flex-col space-y-4">
-                  {accessToken ? (
+                  {session ? (
                     <LogoutButton />
                   ) : (
                     <Link href="/login" className="w-full">
