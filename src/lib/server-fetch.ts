@@ -8,7 +8,7 @@ const serverFetchHelper = async (
   option: RequestInit
 ): Promise<Response> => {
   const { headers, ...restOption } = option;
-  const accessToken = getCookie("accessToken");
+  const accessToken = await getCookie("accessToken");
   const response = await fetch(`${backendUrl}${endPoint}`, {
     headers: {
       ...headers,

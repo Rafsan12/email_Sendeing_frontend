@@ -23,14 +23,6 @@ export const adminSidebarItems: SidebarSection[] = [
         url: "/admin/create-campaign",
         icon: "plus",
       },
-      {
-        title: "Single Campaign",
-        url: "/admin/single-campaign",
-      },
-      {
-        title: "Delete Campaign",
-        url: "/admin/delete",
-      },
     ],
   },
   {

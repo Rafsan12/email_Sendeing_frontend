@@ -28,7 +28,7 @@ export const isRouteMAtched = (pathname: string, routes: RouteConfig) => {
 };
 
 export const getRouteOwner = (
-  pathname: string
+  pathname: string,
 ): "ADMIN" | "ORG_ADMIN" | null => {
   if (isRouteMAtched(pathname, adminRoutes)) {
     return "ADMIN";
@@ -51,7 +51,7 @@ export const getDefaultRoute = (role: UserRoles): string => {
 
 export const isValidRedirectForRole = (
   redirectPath: string,
-  role: UserRoles
+  role: UserRoles,
 ): boolean => {
   const routeOwner = getRouteOwner(redirectPath);
 

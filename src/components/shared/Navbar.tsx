@@ -1,4 +1,4 @@
-import { getCookie } from "@/service/auth/tokenHandler";
+import { getCurrentSession } from "@/lib/CurrentSession";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -10,10 +10,13 @@ export default async function Navbar() {
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
-    { href: "/campaign", label: "Dashboard" },
   ];
 
-  const accessToken = await getCookie("accessToken");
+  const session = await getCurrentSession();
+  const role = session?.role;
+  console.log(role);
+
+  // const accessToken = await getCookie("accessToken");
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-stone-200 bg-[#FFFBF5]/80 backdrop-blur-md">
@@ -42,11 +45,12 @@ export default async function Navbar() {
               <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-orange-600 transition-all group-hover:w-full" />
             </Link>
           ))}
+          {session && <Link href={`/${role}/dashboard`}>Dashboard</Link>}
         </nav>
 
         {/* 3. ACTIONS (Login/Logout) */}
         <div className="hidden md:flex items-center space-x-4">
-          {accessToken ? (
+          {session ? (
             <LogoutButton />
           ) : (
             <Link href="/login">
@@ -75,7 +79,7 @@ export default async function Navbar() {
             {/* Custom Background Color for Sheet */}
             <SheetContent
               side="right"
-              className="w-[300px] sm:w-[400px] p-6 bg-[#FFFBF5] border-stone-200"
+              className="w-75 sm:w-100 p-6 bg-[#FFFBF5] border-stone-200"
             >
               <SheetTitle className="text-left font-serif text-2xl mb-8">
                 Navigation
@@ -93,7 +97,7 @@ export default async function Navbar() {
                 ))}
 
                 <div className="pt-8 flex flex-col space-y-4">
-                  {accessToken ? (
+                  {session ? (
                     <LogoutButton />
                   ) : (
                     <Link href="/login" className="w-full">
