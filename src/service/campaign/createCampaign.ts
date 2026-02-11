@@ -16,7 +16,7 @@ const createCampaignSchema = z.object({
 
 export const createCampaign = async (
   _currentData: unknown,
-  formData: FormData
+  formData: FormData,
 ) => {
   try {
     const token = await getCookie("accessToken");
@@ -30,7 +30,7 @@ export const createCampaign = async (
 
     const decoded = jwt.verify(
       token,
-      process.env.JWT_ACCESS_TOKEN_SECRET!
+      process.env.JWT_ACCESS_TOKEN_SECRET!,
     ) as JwtPayload;
     const userId = decoded.id;
 
@@ -88,7 +88,7 @@ export const createCampaign = async (
       throw new Error("Campaign ID missing from response");
     }
 
-    redirect(`/admin/create-campaign/${campaignId}`);
+    redirect(`/create-campaign/${campaignId}`);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {

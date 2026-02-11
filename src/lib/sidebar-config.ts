@@ -9,22 +9,26 @@ export type SidebarSection = {
   items: SidebarItem[];
 };
 
-export const adminSidebarItems: SidebarSection[] = [
+const commonSideBarItem: SidebarSection[] = [
   {
     title: "Campaigns Management",
     items: [
       {
         title: "Campaigns",
-        url: "/admin/campaign",
+        url: "/campaign",
         icon: "mail",
       },
       {
         title: "Create Campaign",
-        url: "/admin/create-campaign",
+        url: "/create-campaign",
         icon: "plus",
       },
     ],
   },
+];
+
+export const adminSidebarItems: SidebarSection[] = [
+  ...commonSideBarItem,
   {
     title: "User Management",
     items: [
@@ -35,26 +39,4 @@ export const adminSidebarItems: SidebarSection[] = [
     ],
   },
 ];
-export const ORGAdminSidebarItems: SidebarSection[] = [
-  {
-    title: "Campaigns Management",
-    items: [
-      {
-        title: "Campaigns",
-        url: "/orgadmin/campaigns",
-      },
-      {
-        title: "Create Campaign",
-        url: "/orgadmin/campaigns/create",
-      },
-      {
-        title: "Single Campaign",
-        url: "/orgadmin/campaigns/single",
-      },
-      {
-        title: "Delete Campaign",
-        url: "/orgadmin/campaigns/delete",
-      },
-    ],
-  },
-];
+export const ORGAdminSidebarItems: SidebarSection[] = [...commonSideBarItem];

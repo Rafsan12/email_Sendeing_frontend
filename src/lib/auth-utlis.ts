@@ -44,7 +44,7 @@ export const getDefaultRoute = (role: UserRoles): string => {
     return "/admin/dashboard";
   }
   if (role === "ORG_ADMIN") {
-    return "/ORGADMIN/dashboard";
+    return "/org_admin/dashboard";
   }
   return "/login";
 };

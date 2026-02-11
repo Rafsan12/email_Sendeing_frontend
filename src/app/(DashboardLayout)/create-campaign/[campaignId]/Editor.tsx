@@ -16,7 +16,7 @@ export default function CampaignEditor({ campaignId }: { campaignId: string }) {
 
   const [state, formAction, isPending] = useActionState(
     saveEmailTemplate,
-    null
+    null,
   );
 
   const onReady = (editorInstance: Editor) => {
@@ -42,7 +42,7 @@ export default function CampaignEditor({ campaignId }: { campaignId: string }) {
       {/* ================= HEADER ================= */}
       <header className="flex items-center justify-between px-6 h-16 border-b border-stone-200 bg-white sticky top-0 z-50">
         <div className="flex items-center gap-4">
-          <Link href="/admin/create-campaign">
+          <Link href="/create-campaign">
             <Button variant="ghost" size="icon">
               <ArrowLeft className="w-5 h-5" />
             </Button>
@@ -72,7 +72,7 @@ export default function CampaignEditor({ campaignId }: { campaignId: string }) {
             Debug
           </Button>
 
-          <Link href={`/admin/create-campaign/${campaignId}/send`}>
+          <Link href={`/create-campaign/${campaignId}/send`}>
             <Button variant="outline" size="sm">
               <Send className="w-4 h-4 mr-1" />
               Send Test

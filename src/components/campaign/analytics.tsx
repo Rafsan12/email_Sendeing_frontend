@@ -46,7 +46,7 @@ export default function CampaignAnalytics({
 }) {
   const [state, formAction, isPending] = useActionState(
     singleCampaignData,
-    null
+    null,
   );
 
   /* 🔁 Fetch analytics on mount */
@@ -106,7 +106,7 @@ export default function CampaignAnalytics({
         <div className="flex justify-between items-start gap-4">
           <div>
             {/* BUTTON 1: Top Navigation */}
-            <Link href="/admin/campaign">
+            <Link href="/campaign">
               <Button
                 variant="ghost"
                 className="pl-0 text-stone-500 hover:text-orange-600 hover:bg-transparent mb-2 group"
@@ -255,7 +255,7 @@ export default function CampaignAnalytics({
         {/* ================= FOOTER ACTIONS ================= */}
         {/* BUTTON 2: Bottom Navigation */}
         <div className="flex justify-center pt-8 border-t border-stone-200/50">
-          <Link href="/admin/campaign">
+          <Link href="/campaign">
             <Button
               variant="outline"
               className="border-stone-300 text-stone-600 hover:text-orange-600 hover:border-orange-200 hover:bg-orange-50 transition-all"

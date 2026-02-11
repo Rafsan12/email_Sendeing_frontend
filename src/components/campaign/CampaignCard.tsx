@@ -30,7 +30,7 @@ export default async function CampaignCard() {
   const totalCampaigns = campaigns.length;
   const totalEmailsSent = campaigns.reduce(
     (sum: number, c: any) => sum + (c.emails?.length ?? 0),
-    0
+    0,
   );
 
   return (
@@ -48,7 +48,7 @@ export default async function CampaignCard() {
           </div>
 
           {/* THE NEW BUTTON */}
-          <Link href="/admin/create-campaign">
+          <Link href="/create-campaign">
             <Button className="h-12 px-6 bg-stone-900 hover:bg-orange-600 text-white rounded-full shadow-lg shadow-stone-200 hover:shadow-orange-200 transition-all duration-300 group">
               <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform" />
               Create New Campaign
@@ -113,7 +113,7 @@ export default async function CampaignCard() {
               <p className="text-stone-500 mb-6">
                 Create your first campaign to get started.
               </p>
-              <Link href="/admin/create-campaign">
+              <Link href="/create-campaign">
                 <Button variant="outline">Create Campaign</Button>
               </Link>
             </div>
@@ -139,7 +139,7 @@ export default async function CampaignCard() {
                               : "bg-yellow-50 text-yellow-700 border-yellow-200"
                           }
                         >
-                          {isSent ? "Sent" : c.status || "Draft"}
+                          {isSent ? "SUCCESS" : c.status || "Draft"}
                         </Badge>
                         {c.sentAt && (
                           <span className="text-[10px] font-mono text-stone-400 flex items-center gap-1">
@@ -158,27 +158,50 @@ export default async function CampaignCard() {
                     </div>
 
                     {/* Card Bottom (Actions) */}
-                    <div className="pt-6 border-t border-stone-50 mt-auto flex items-center gap-2">
-                      {/* 1. Analytics Button (Primary) */}
-                      <Link
-                        href={`/admin/campaign/${c.id}/analytics`}
-                        className="flex-1"
-                      >
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-between text-stone-500 hover:text-stone-900 hover:bg-stone-50 group-hover:bg-orange-50 group-hover:text-orange-700 transition-colors"
+                    <div className="pt-5 border-t border-stone-50 mt-auto flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        {/* 1. Analytics Button (Primary action for sent campaigns) */}
+                        <Link
+                          href={`/campaign/${c.id}/analytics`}
+                          className="flex-1"
                         >
-                          <span className="flex items-center gap-2">
-                            <BarChart3 className="w-4 h-4" />
-                            Analytics
-                          </span>
-                          <ArrowRight className="w-4 h-4" />
-                        </Button>
-                      </Link>
-                      <DeleteCampaignModal
-                        campaignId={c.id}
-                        campaignTitle={c.title}
-                      />
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-between text-stone-500 hover:text-stone-900 hover:bg-stone-50 group-hover:bg-orange-50 group-hover:text-orange-700 transition-colors px-3"
+                          >
+                            <span className="flex items-center gap-2">
+                              <BarChart3 className="w-4 h-4" />
+                              Analytics
+                            </span>
+                            <ArrowRight className="w-4 h-4" />
+                          </Button>
+                        </Link>
+
+                        {/* 2. Delete Button Component */}
+                        <DeleteCampaignModal
+                          campaignId={c.id}
+                          campaignTitle={c.title}
+                        />
+                      </div>
+
+                      {/* 3. Send Button (Only shows if pending/draft) */}
+                      {c.status === "PENDING" && (
+                        <Link
+                          href={`/create-campaign/${c.id}/send`}
+                          className="w-full"
+                        >
+                          <Button
+                            variant="default"
+                            className="w-full justify-between bg-stone-100 text-stone-700 hover:bg-orange-600 hover:text-white transition-colors border-0"
+                          >
+                            <span className="flex items-center gap-2">
+                              <Send className="w-4 h-4" />
+                              Ready to Send
+                            </span>
+                            <ArrowRight className="w-4 h-4" />
+                          </Button>
+                        </Link>
+                      )}
                     </div>
                   </div>
                 );

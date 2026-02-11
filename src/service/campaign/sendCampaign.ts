@@ -11,7 +11,7 @@ const schema = z.object({
 
 export const sendCampaignEmail = async (
   _state: unknown,
-  formData: FormData
+  formData: FormData,
 ) => {
   try {
     const parsed = schema.safeParse({
@@ -34,7 +34,7 @@ export const sendCampaignEmail = async (
     }
 
     // ✅ redirect MUST be last
-    redirect(`/admin/create-campaign/${campaignId}/analytics`);
+    redirect(`/create-campaign/${campaignId}/analytics`);
   } catch (error: any) {
     // Re-throw NEXT_REDIRECT errors so Next.js can handle them
     if (error?.digest?.startsWith("NEXT_REDIRECT")) {
