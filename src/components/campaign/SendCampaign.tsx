@@ -5,29 +5,28 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { sendCampaignEmail } from "@/service/campaign/sendCampaign";
 import { AlertCircle, Loader2, Rocket, Send } from "lucide-react";
-import { startTransition, useActionState } from "react";
+import { useActionState } from "react";
 
 export default function SendCampaign({ campaignId }: { campaignId: string }) {
   const [state, formAction, isPending] = useActionState(
     sendCampaignEmail,
-    null
+    null,
   );
+  console.log(formAction);
 
   const handleSend = () => {
     const fd = new FormData();
     fd.append("campaignId", campaignId);
 
-    startTransition(() => {
-      formAction(fd);
-    });
+    formAction(fd);
   };
 
   // 2. READY TO SEND VIEW
   return (
-    <div className="flex items-center justify-center min-h-[400px] w-full bg-[#FFFBF5]">
+    <div className="flex items-center justify-center min-h-100 w-full bg-[#FFFBF5]">
       <Card className="relative w-full max-w-lg border-0 shadow-2xl shadow-stone-200/50 bg-white overflow-hidden">
         {/* Top Decoration */}
-        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600" />
+        <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-orange-400 via-orange-500 to-orange-600" />
 
         <div className="p-8 md:p-12">
           {/* Icon Header */}

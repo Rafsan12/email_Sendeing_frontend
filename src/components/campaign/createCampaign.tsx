@@ -9,9 +9,8 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
 export default function CreateCampaign() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [state, formAction, isPending] = useActionState(createCampaign, null);
-
+  // console.log(state);
   return (
     <div className="min-h-screen bg-[#FFFBF5] py-20 px-6 flex justify-center">
       <div className="w-full max-w-2xl relative">
@@ -53,6 +52,7 @@ export default function CreateCampaign() {
                   placeholder="e.g. October Newsletter"
                   className="h-14 bg-white border-stone-100 shadow-sm text-lg focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl px-5 transition-all"
                 />
+
                 <p className="mt-2 text-xs text-stone-400">
                   This is for your internal reference only.
                 </p>
@@ -112,7 +112,7 @@ export default function CreateCampaign() {
                   name="recipients"
                   required
                   placeholder="email@example.com..."
-                  className="min-h-[120px] border-none shadow-none text-base resize-none bg-transparent focus-visible:ring-0"
+                  className="min-h-30 border-none shadow-none text-base resize-none bg-transparent focus-visible:ring-0"
                 />
                 <div className="px-3 pb-2 flex justify-between items-center border-t border-stone-50 pt-2">
                   <span className="text-xs text-stone-400">
@@ -131,7 +131,7 @@ export default function CreateCampaign() {
             <Button
               type="submit"
               disabled={isPending}
-              className="h-16 w-full md:w-auto md:min-w-[200px] rounded-full bg-stone-900 hover:bg-orange-600 text-white text-lg font-medium shadow-xl shadow-stone-200 transition-all hover:-translate-y-1 hover:shadow-2xl"
+              className="h-16 w-full md:w-auto md:min-w-50 rounded-full bg-stone-900 hover:bg-orange-600 text-white text-lg font-medium shadow-xl shadow-stone-200 transition-all hover:-translate-y-1 hover:shadow-2xl"
             >
               {isPending ? (
                 <span className="flex items-center gap-2">

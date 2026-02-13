@@ -11,7 +11,10 @@ const createCampaignSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
   contentHtml: z.string().optional(),
   createdById: z.uuid("Invalid createdById"),
-  recipients: z.array(z.email("Invalid email address")),
+  recipients: z
+    .array(z.string().trim().email("Invalid email address"))
+    .min(1, "At least one recipient is required")
+    .max(50, "Too many recipients"),
 });
 
 export const createCampaign = async (
@@ -35,22 +38,25 @@ export const createCampaign = async (
     const userId = decoded.id;
 
     const recipientsRaw = formData.get("recipients");
+    const recipientsArray =
+      recipientsRaw
+        ?.toString()
+        .split(/[,\n;\s]+/)
+        .map((email) => email.trim().toLowerCase())
+        .filter(Boolean) ?? [];
+
+    const uniqueEmail = Array.from(new Set(recipientsArray));
 
     const campaignData = {
       title: formData.get("title")?.toString(),
       subject: formData.get("subject")?.toString(),
       contentHtml: formData.get("contentHtml")?.toString(),
       createdById: userId,
-      recipients: recipientsRaw
-        ? recipientsRaw
-            .toString()
-            .split(",")
-            .map((email) => email.trim())
-            .filter(Boolean)
-        : [],
+      recipients: uniqueEmail,
     };
 
     const validated = createCampaignSchema.safeParse(campaignData);
+    console.log("from server", validated);
 
     if (!validated.success) {
       return {
