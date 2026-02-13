@@ -9,10 +9,10 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Building2 } from "lucide-react";
+import { User } from "lucide-react";
 import Link from "next/link";
 
-export function RegisterForm({
+export function OrgRegisterForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
@@ -31,13 +31,15 @@ export function RegisterForm({
       {/* CUSTOM TABS */}
       <div className="p-1 bg-stone-100/80 rounded-xl">
         <Link
-          href={"/company"}
+          href={"/register"}
           className={cn(
-            " flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all duration-300",
+            "flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all duration-300",
+
+            "text-stone-500 hover:text-stone-700 hover:bg-stone-200/50",
           )}
         >
-          <Building2 className="w-4 h-4" />
-          Company
+          <User className="w-4 h-4" />
+          Personal
         </Link>
       </div>
 
@@ -49,19 +51,46 @@ export function RegisterForm({
         <FieldGroup className="space-y-4">
           {/* COMMON FIELDS */}
           <Field>
-            <FieldLabel htmlFor="name">{"Full Name"}</FieldLabel>
+            <FieldLabel htmlFor="name">{"Contact Person Name"}</FieldLabel>
             <Input
               id="name"
               name="name"
               type="text"
-              placeholder={"John Doe"}
+              placeholder={"Jane Smith"}
               required
               className="bg-stone-50/50 border-stone-200 focus-visible:ring-orange-500"
             />
           </Field>
 
+          {/* COMPANY SPECIFIC FIELDS */}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in zoom-in-95 duration-300">
+            <Field>
+              <FieldLabel htmlFor="orgName">Organization Name</FieldLabel>
+              <Input
+                id="orgName"
+                name="orgName"
+                type="text"
+                placeholder="Acme Inc."
+                required
+                className="bg-stone-50/50 border-stone-200 focus-visible:ring-orange-500"
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="orgType">Organization Type</FieldLabel>
+              <Input
+                id="orgType"
+                name="orgType"
+                type="text"
+                placeholder="e.g. Agency, SaaS"
+                required
+                className="bg-stone-50/50 border-stone-200 focus-visible:ring-orange-500"
+              />
+            </Field>
+          </div>
+
           <Field>
-            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <FieldLabel htmlFor="email">Work Email</FieldLabel>
             <Input
               id="email"
               name="email"
@@ -88,7 +117,7 @@ export function RegisterForm({
               type="submit"
               className="w-full bg-stone-900 hover:bg-orange-600 text-white shadow-lg hover:shadow-orange-200 transition-all"
             >
-              Create Personal Account
+              Register Organization
             </Button>
           </Field>
 

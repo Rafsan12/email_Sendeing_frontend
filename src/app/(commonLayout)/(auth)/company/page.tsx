@@ -1,8 +1,8 @@
-import { RegisterForm } from "@/components/auth/registerForm";
+import { OrgRegisterForm } from "@/components/auth/org-register";
 import { Globe, ShieldCheck, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
-export default function RegisterPage() {
+export default function CompanyRegisterPage() {
   return (
     <div className="w-full min-h-screen lg:grid lg:grid-cols-2">
       {/* =========================================================
@@ -93,8 +93,8 @@ export default function RegisterPage() {
 
           {/* The Form */}
           {/* A clean white card to lift the form off the cream background */}
-          <div className="bg-white ">
-            <RegisterForm />
+          <div className="bg-white">
+            <OrgRegisterForm />
           </div>
 
           {/* Mobile Login Link */}
