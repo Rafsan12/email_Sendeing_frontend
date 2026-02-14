@@ -9,13 +9,30 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { registerUser } from "@/service/auth/registerUser";
 import { Building2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
 
 export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [state, formAction, isPending] = useActionState(registerUser, null);
+  console.log(state?.errors);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state?.success) {
+      router.push("/login");
+    }
+  }, [state?.success, router]);
+
+  const getFieldError = (fieldName: string): string | undefined => {
+    return state?.errors?.find((err) => err.field === fieldName)?.message;
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)}>
       {/* HEADER */}
@@ -43,6 +60,7 @@ export function RegisterForm({
 
       {/* FORM */}
       <form
+        action={formAction}
         {...props}
         className="animate-in fade-in slide-in-from-bottom-2 duration-500"
       >
@@ -58,6 +76,11 @@ export function RegisterForm({
               required
               className="bg-stone-50/50 border-stone-200 focus-visible:ring-orange-500"
             />
+            {getFieldError("name") && (
+              <FieldDescription className="text-red-600">
+                {getFieldError("name")}
+              </FieldDescription>
+            )}
           </Field>
 
           <Field>
@@ -70,6 +93,11 @@ export function RegisterForm({
               required
               className="bg-stone-50/50 border-stone-200 focus-visible:ring-orange-500"
             />
+            {state?.errors?.find((e) => e.field === "email") && (
+              <p className="text-red-500 text-xs mt-1">
+                {state.errors.find((e) => e.field === "email")?.message}
+              </p>
+            )}
           </Field>
 
           <Field>
@@ -81,6 +109,11 @@ export function RegisterForm({
               required
               className="bg-stone-50/50 border-stone-200 focus-visible:ring-orange-500"
             />
+            {getFieldError("password") && (
+              <FieldDescription className="text-red-600">
+                {getFieldError("password")}
+              </FieldDescription>
+            )}
           </Field>
 
           <Field className="pt-2">
@@ -88,7 +121,7 @@ export function RegisterForm({
               type="submit"
               className="w-full bg-stone-900 hover:bg-orange-600 text-white shadow-lg hover:shadow-orange-200 transition-all"
             >
-              Create Personal Account
+              {isPending ? "Creating Account" : "Create Personal Account"}
             </Button>
           </Field>
 
