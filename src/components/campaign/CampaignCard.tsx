@@ -7,6 +7,7 @@ import {
   BarChart3,
   Calendar,
   Mail,
+  Palette,
   Plus,
   Send,
 } from "lucide-react";
@@ -15,6 +16,7 @@ import { DeleteCampaignModal } from "./deleteCampaign";
 
 export default async function CampaignCard() {
   const res = await singleUserCampaign();
+  console.log(res);
 
   if (!res.success) {
     return (
@@ -122,6 +124,10 @@ export default async function CampaignCard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {campaigns.map((c: any) => {
                 const isSent = c.status === "COMPLETED" || c.sentAt;
+                // Logic to determine primary action button
+                const showSendButton = c.status === "PENDING" && c.contentHtml;
+                const showDesignButton =
+                  c.status === "PENDING" && !c.contentHtml;
 
                 return (
                   <div
@@ -158,16 +164,16 @@ export default async function CampaignCard() {
                     </div>
 
                     {/* Card Bottom (Actions) */}
-                    <div className="pt-5 border-t border-stone-50 mt-auto flex flex-col gap-2">
+                    <div className="pt-5 border-t border-stone-50 mt-auto flex flex-col gap-3">
+                      {/* Row 1: Analytics & Delete */}
                       <div className="flex items-center gap-2">
-                        {/* 1. Analytics Button (Primary action for sent campaigns) */}
                         <Link
                           href={`/campaign/${c.id}/analytics`}
                           className="flex-1"
                         >
                           <Button
                             variant="ghost"
-                            className="w-full justify-between text-stone-500 hover:text-stone-900 hover:bg-stone-50 group-hover:bg-orange-50 group-hover:text-orange-700 transition-colors px-3"
+                            className="w-full justify-between text-stone-500 hover:text-stone-900 hover:bg-stone-50 group-hover:bg-orange-50 group-hover:text-orange-700 transition-colors px-3 border border-transparent hover:border-stone-200"
                           >
                             <span className="flex items-center gap-2">
                               <BarChart3 className="w-4 h-4" />
@@ -177,26 +183,43 @@ export default async function CampaignCard() {
                           </Button>
                         </Link>
 
-                        {/* 2. Delete Button Component */}
                         <DeleteCampaignModal
                           campaignId={c.id}
                           campaignTitle={c.title}
                         />
                       </div>
 
-                      {/* 3. Send Button (Only shows if pending/draft) */}
-                      {c.status === "PENDING" && (
+                      {/* Row 2: Primary Action (Send or Design) */}
+                      {showSendButton && (
                         <Link
                           href={`/create-campaign/${c.id}/send`}
                           className="w-full"
                         >
                           <Button
                             variant="default"
-                            className="w-full justify-between bg-stone-100 text-stone-700 hover:bg-orange-600 hover:text-white transition-colors border-0"
+                            className="w-full justify-between bg-stone-100 text-stone-700 hover:bg-orange-600 hover:text-white transition-colors border-0 h-10"
                           >
                             <span className="flex items-center gap-2">
                               <Send className="w-4 h-4" />
                               Ready to Send
+                            </span>
+                            <ArrowRight className="w-4 h-4" />
+                          </Button>
+                        </Link>
+                      )}
+
+                      {showDesignButton && (
+                        <Link
+                          href={`/create-campaign/${c.id}`}
+                          className="w-full"
+                        >
+                          <Button
+                            variant="default"
+                            className="w-full justify-between bg-stone-100 text-stone-700 hover:bg-orange-600 hover:text-white transition-colors border-0 h-10"
+                          >
+                            <span className="flex items-center gap-2">
+                              <Palette className="w-4 h-4" />
+                              Ready to Design
                             </span>
                             <ArrowRight className="w-4 h-4" />
                           </Button>

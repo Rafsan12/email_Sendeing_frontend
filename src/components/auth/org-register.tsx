@@ -9,13 +9,25 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { orgRegister } from "@/service/auth/orgregister";
 import { User } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
 
 export function OrgRegisterForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [state, formAction, isPending] = useActionState(orgRegister, null);
+  console.log(state);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state?.success) {
+      router.push("/login");
+    }
+  }, [state?.success, router]);
   return (
     <div className={cn("flex flex-col gap-6", className)}>
       {/* HEADER */}
@@ -45,6 +57,7 @@ export function OrgRegisterForm({
 
       {/* FORM */}
       <form
+        action={formAction}
         {...props}
         className="animate-in fade-in slide-in-from-bottom-2 duration-500"
       >
@@ -115,9 +128,10 @@ export function OrgRegisterForm({
           <Field className="pt-2">
             <Button
               type="submit"
+              disabled={isPending}
               className="w-full bg-stone-900 hover:bg-orange-600 text-white shadow-lg hover:shadow-orange-200 transition-all"
             >
-              Register Organization
+              {isPending ? "Registering.." : "Register Organization"}
             </Button>
           </Field>
 

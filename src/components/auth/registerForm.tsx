@@ -119,6 +119,7 @@ export function RegisterForm({
           <Field className="pt-2">
             <Button
               type="submit"
+              disabled={isPending}
               className="w-full bg-stone-900 hover:bg-orange-600 text-white shadow-lg hover:shadow-orange-200 transition-all"
             >
               {isPending ? "Creating Account" : "Create Personal Account"}

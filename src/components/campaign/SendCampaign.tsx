@@ -12,14 +12,6 @@ export default function SendCampaign({ campaignId }: { campaignId: string }) {
     sendCampaignEmail,
     null,
   );
-  console.log(formAction);
-
-  const handleSend = () => {
-    const fd = new FormData();
-    fd.append("campaignId", campaignId);
-
-    formAction(fd);
-  };
 
   // 2. READY TO SEND VIEW
   return (
@@ -67,9 +59,9 @@ export default function SendCampaign({ campaignId }: { campaignId: string }) {
           )}
 
           {/* Action Button */}
-          <div className="space-y-4">
+          <form action={formAction} className="space-y-4">
+            <input type="hidden" name="campaignId" value={campaignId} />
             <Button
-              onClick={handleSend}
               disabled={isPending}
               className="w-full h-14 text-lg font-semibold bg-stone-900 hover:bg-orange-600 text-white rounded-xl transition-all duration-300 shadow-lg hover:shadow-orange-200 group"
             >
@@ -89,7 +81,7 @@ export default function SendCampaign({ campaignId }: { campaignId: string }) {
             <p className="text-xs text-center text-stone-400">
               By clicking send, you agree to our anti-spam policy.
             </p>
-          </div>
+          </form>
         </div>
       </Card>
     </div>
